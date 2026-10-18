@@ -1,0 +1,161 @@
+import type { Relation, StepId } from "@/lib/types";
+
+export type Lang = "zh" | "en";
+export type Stage = "new" | "launch" | "growing" | "institution" | "quiet";
+
+export const T = {
+  zh: {
+    headline: "看懂一个 GitHub 仓库，再决定用不用",
+    sub: "粘贴仓库链接，得到它的定位、能替代它的项目，以及每个项目还有没有人维护。结论都来自 GitHub API 和仓库 README。",
+    placeholder: "粘贴 GitHub 链接，或输入 owner/repo",
+    analyze: "分析仓库",
+    stop: "停止",
+    try: "试试这些",
+    note: "体验版：每个 IP 每天可分析 2 个新仓库，分析过的仓库直接看缓存结果。一次分析约 1–2 分钟。",
+    steps: {
+      fetch: "读取 README 和依赖",
+      facets: "拆解它是什么",
+      search: "搜索同类项目",
+      verify: "核实候选是否存在",
+      health: "计算维护健康度",
+      tier: "判断相关程度",
+      report: "整理结论",
+    } satisfies Record<StepId, string>,
+    elapsed: (s: number) => `已用 ${s} 秒`,
+    stage: {
+      new: "刚发布",
+      launch: "正在爆发",
+      growing: "稳步增长",
+      institution: "成熟可靠",
+      quiet: "已沉寂",
+    } satisfies Record<Stage, string>,
+    stars: "Star",
+    perDay: "每天新增",
+    pushed: "最近提交",
+    license: "许可证",
+    health: "健康分",
+    healthHint: "按最近提交、关注度、issue/PR 处理率和项目年龄综合计算，满分 100",
+    alternatives: "可以换成什么",
+    alternativesSub: "做同一件事的其他项目，各自更适合的场景",
+    noAlternatives: "没有找到做同一件事的项目。下面的地图里有相关但不能直接替代的项目。",
+    pickIt: "选它，如果",
+    pickOriginal: "选原仓库，如果",
+    map: "关系地图",
+    mapSub: "离中心越近越相关，圆越大 Star 越多。点击节点查看详情。",
+    whatItIs: "它是什么",
+    builtOn: "建立在",
+    facets: "从这几个角度找同类",
+    shares: "共同点",
+    differs: "不同点",
+    openOnGithub: "在 GitHub 打开",
+    backToOriginal: "回到原仓库",
+    all: (n: number) => `全部 ${n} 个候选`,
+    colRepo: "仓库",
+    colShared: "共同点",
+    cached: "这是 24 小时内的缓存结果",
+    took: (s: number) => `分析用时 ${s} 秒`,
+    days: (d: number) => (d === 0 ? "今天" : d < 30 ? `${d} 天前` : d < 365 ? `${Math.round(d / 30)} 个月前` : `${(d / 365).toFixed(1)} 年前`),
+    relation: {
+      upstream: "上游依赖",
+      alternative: "可替代",
+      downstream: "基于它",
+      peer: "同类",
+      same_author: "同作者",
+    } satisfies Record<Relation, string>,
+    archived: "已归档",
+    errorFallback: "分析没有完成。请检查链接后重试。",
+    errors: {
+      bad_url: "这不是 GitHub 仓库链接。请输入类似 https://github.com/owner/repo 或 owner/repo。",
+      rate_limited: "今天的 2 次新分析已经用完。已经分析过的仓库仍然可以直接查看，明天可以继续分析新仓库。",
+    },
+  },
+  en: {
+    headline: "Understand a GitHub repo before you depend on it",
+    sub: "Paste a repo link to see where it sits, which projects could replace it, and whether each one is still maintained. Every claim comes from the GitHub API and the repos' READMEs.",
+    placeholder: "Paste a GitHub link or type owner/repo",
+    analyze: "Analyze repo",
+    stop: "Stop",
+    try: "Try one",
+    note: "Demo: 2 new repos per IP per day; repos analyzed before load from cache. An analysis takes about 1–2 minutes.",
+    steps: {
+      fetch: "Reading README and dependencies",
+      facets: "Working out what it is",
+      search: "Searching for similar projects",
+      verify: "Checking candidates exist",
+      health: "Measuring maintenance health",
+      tier: "Judging relevance",
+      report: "Writing conclusions",
+    } satisfies Record<StepId, string>,
+    elapsed: (s: number) => `${s}s elapsed`,
+    stage: {
+      new: "Just released",
+      launch: "Taking off",
+      growing: "Growing steadily",
+      institution: "Established",
+      quiet: "Gone quiet",
+    } satisfies Record<Stage, string>,
+    stars: "Stars",
+    perDay: "Per day",
+    pushed: "Last commit",
+    license: "License",
+    health: "Health",
+    healthHint: "Combines last commit, attention, issue/PR handling and age; out of 100",
+    alternatives: "What could replace it",
+    alternativesSub: "Projects doing the same job, and when each is the better pick",
+    noAlternatives: "No project doing the same job turned up. The map below shows related projects that aren't direct substitutes.",
+    pickIt: "Pick it if",
+    pickOriginal: "Pick the original if",
+    map: "Relationship map",
+    mapSub: "Closer to the centre means more related; bigger means more stars. Select a node for details.",
+    whatItIs: "What it is",
+    builtOn: "Built on",
+    facets: "Angles used to find similar projects",
+    shares: "In common",
+    differs: "Different",
+    openOnGithub: "Open on GitHub",
+    backToOriginal: "Back to the original",
+    all: (n: number) => `All ${n} candidates`,
+    colRepo: "Repo",
+    colShared: "In common",
+    cached: "Cached result from the last 24 hours",
+    took: (s: number) => `Analyzed in ${s}s`,
+    days: (d: number) => (d === 0 ? "today" : d < 30 ? `${d}d ago` : d < 365 ? `${Math.round(d / 30)}mo ago` : `${(d / 365).toFixed(1)}y ago`),
+    relation: {
+      upstream: "Upstream",
+      alternative: "Alternative",
+      downstream: "Built on it",
+      peer: "Similar",
+      same_author: "Same author",
+    } satisfies Record<Relation, string>,
+    archived: "Archived",
+    errorFallback: "The analysis didn't finish. Check the link and try again.",
+    errors: {
+      bad_url: "That isn't a GitHub repo link. Enter something like https://github.com/owner/repo or owner/repo.",
+      rate_limited: "You've used today's 2 new analyses. Repos already analyzed still open from cache; new ones work again tomorrow.",
+    },
+  },
+} as const;
+
+export const REL_COLOR: Record<Relation, string> = {
+  upstream: "var(--up)",
+  alternative: "var(--alt)",
+  downstream: "var(--down)",
+  peer: "var(--peer)",
+  same_author: "var(--kin)",
+};
+
+export const STAGE_COLOR: Record<Stage, string> = {
+  new: "var(--up)",
+  launch: "var(--alt)",
+  growing: "var(--sea)",
+  institution: "var(--good)",
+  quiet: "var(--bad)",
+};
+
+export function fmtStars(n: number) {
+  return n >= 1000 ? `${(n / 1000).toFixed(n >= 10_000 ? 0 : 1)}k` : String(n);
+}
+
+export function scoreColor(s: number) {
+  return s >= 70 ? "var(--good)" : s >= 45 ? "var(--warn)" : "var(--bad)";
+}
