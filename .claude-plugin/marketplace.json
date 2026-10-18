@@ -1,0 +1,19 @@
+{
+  "name": "repo-compass",
+  "owner": {
+    "name": "repo-compass contributors"
+  },
+  "metadata": {
+    "description": "Where does this GitHub repo sit, and should I use it?"
+  },
+  "plugins": [
+    {
+      "name": "repo-compass",
+      "source": "./",
+      "description": "Facet-based similar-repo recommendation and positioning for any GitHub repository.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": ["github", "recommendation", "similar-repositories"]
+    }
+  ]
+}
