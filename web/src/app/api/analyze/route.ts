@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   const full = parseRepo(lastUserText(body.messages));
   if (!full) return error(400, "Enter a GitHub URL like https://github.com/owner/repo");
 
-  const key = `result:v2:${full.toLowerCase()}:${lang}`;
+  const key = `result:v3:${full.toLowerCase()}:${lang}`;
   const cached = (await cache.get(key).catch(() => null)) as Result | null;
 
   if (!cached) {
@@ -47,9 +47,7 @@ export async function POST(req: Request) {
         writer.write({ type: "data-original", id: "original", data: cached.original });
         writer.write({ type: "data-overview", id: "overview", data: cached.overview });
         writer.write({ type: "data-candidates", id: "candidates", data: cached.candidates });
-        writer.write({ type: "text-start", id: "report" });
-        writer.write({ type: "text-delta", id: "report", delta: cached.report });
-        writer.write({ type: "text-end", id: "report" });
+        writer.write({ type: "data-report", id: "report", data: cached.report });
         return;
       }
       const result = await analyze(full, lang, writer);

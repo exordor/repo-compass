@@ -1,5 +1,6 @@
-import type { UIMessage } from "ai";
+import type { DeepPartial, UIMessage } from "ai";
 import type { Health } from "./github";
+import type { Report } from "./analyze";
 
 export type StepId = "fetch" | "facets" | "search" | "verify" | "tier" | "health" | "report";
 export type StepStatus = "running" | "done" | "error";
@@ -33,6 +34,7 @@ export type DataParts = {
   original: Health;
   overview: Overview;
   candidates: Candidate[];
+  report: DeepPartial<Report>;
   meta: { cached: boolean; model: string; tierModel: string; elapsedMs?: number };
 };
 

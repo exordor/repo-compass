@@ -6,7 +6,7 @@ import {
   Output,
   streamText,
   tool,
-  toUIMessageStream,
+  type DeepPartial,
   type UIMessageStreamWriter,
 } from "ai";
 import { z } from "zod";
@@ -46,7 +46,7 @@ const overviewSchema = z.object({
     .array(
       z.object({
         type: z.enum(["intent", "route", "form", "ecosystem", "signature"]),
-        label: z.string().describe("3-8 words"),
+        label: z.string().describe("short noun phrase"),
         description: z.string().describe("One sentence, concrete."),
         queries: z.array(z.string()).min(1).max(3).describe("Search queries using nouns a matching README would contain"),
       }),
@@ -55,13 +55,13 @@ const overviewSchema = z.object({
     .max(6),
 });
 
-async function decompose(full: string, meta: RepoMeta, readme: string, tree: string[], manifests: { name: string; content: string }[]) {
+async function decompose(lang: Lang, full: string, meta: RepoMeta, readme: string, tree: string[], manifests: { name: string; content: string }[]) {
   const { output } = await generateText({
     model: MODEL,
     output: Output.object({ schema: overviewSchema }),
     instructions: `You analyse GitHub repositories. A repository is never just one thing: decompose it into 3-6 distinct facets, each a different answer to "what is this repo?".
 Facet types: intent (problem, for whom), route (stack/architecture/pipeline — trust dependency manifests over marketing), form (library / CLI / agent skill / app / showcase / dataset / benchmark / tutorial…), ecosystem (platform or community it lives in), signature (the one unusual choice you'd mention first to a friend — always include one).
-Merge facets that would pull the same candidates. For each facet write 1-3 search queries with the concrete nouns a matching README would contain (not abstract facet names). Write labels and descriptions in English.`,
+Merge facets that would pull the same candidates. For each facet write 1-3 search queries with the concrete nouns a matching README would contain (not abstract facet names). Write summary, labels and descriptions in ${LANG_NAME[lang]}; labels are short noun phrases (2-6 words). Keep search queries in English.`,
     prompt: JSON.stringify({
       repo: full,
       description: meta.description,
@@ -168,25 +168,51 @@ function tierOf(shared: number, sameJob: number, relation: string): 0 | 1 | 2 | 
 
 // ------------------------------------------------------------------- report
 
-function reportInstructions(lang: Lang) {
-  return `You write the final repo-compass report. Answer in ${LANG_NAME[lang]}; keep repo names, descriptions and numbers as they are.
-Every comparative sentence must be traceable to a number or a README fact in the data you are given. Never add repos that are not in the data. Never invent numbers.
-"Tier" (3 = shares 3+ facets or same job, 2 = two facets, 1 = one) was graded by a classifier; "shared" lists the facets it found shared; health columns come from the GitHub API.
+export const reportSchema = z.object({
+  verdict: z.string().describe("One or two sentences answering 'should I use it, or something else?'. The first thing the user reads."),
+  stage: z
+    .enum(["new", "launch", "growing", "institution", "quiet"])
+    .describe("new: <30 days and little traction; launch: young with high ★/day; growing: steady; institution: years old and maintained; quiet: no push for 6+ months"),
+  positioning: z.string().describe("Two sentences max: what it is and where it sits (infrastructure vs convenience layer over its upstream)."),
+  alternatives: z
+    .array(
+      z.object({
+        repo: z.string().describe("owner/repo from candidates"),
+        what: z.string().describe("What it is, under 20 words"),
+        pickIt: z.string().describe("Pick this one if … (one short clause, grounded in data)"),
+        pickOriginal: z.string().describe("Pick the original if … (one short clause, grounded in data)"),
+      }),
+    )
+    .max(4),
+  closest: z
+    .array(
+      z.object({
+        repo: z.string(),
+        what: z.string().describe("Under 20 words"),
+        differs: z.string().describe("The one thing it does differently, under 15 words"),
+      }),
+    )
+    .max(5),
+  notes: z
+    .array(z.object({ repo: z.string(), what: z.string().describe("Under 20 words") }))
+    .max(8)
+    .describe("Short notes for the remaining kept candidates worth a mention (upstream, downstream, same facet)."),
+  observation: z.string().describe("One pattern-level sentence, or empty string if there isn't a real one."),
+});
+export type Report = z.infer<typeof reportSchema>;
 
-Structure (markdown, headings as bold lines, no H1):
-**Positioning** — one short paragraph: what the repo is, its facets, and a health line "created <date>, ★N (~M/day), last push <N days ago>, <open issues>, <license>". Say whether it is a launch (high ★/day, young) or an institution. Then: built on <upstream>; <downstream> builds on it, or no visible downstream yet.
-**Alternatives — same job, different trade-offs** — 2-4 entries from candidates with relation "alternative" or same_job ≥ 0.5: "owner/repo (★N, last push …) — what it is. Better for: …. The original is better for: …". End with one sentence of verdict. If there are none, say so in one line.
-**Closest — share most facets** — tier 3/2 entries: "owner/repo (★N) — one line. Shares: …. Differs: …".
-**Same <facet>** groups for the remaining tier 1 entries, grouped by their shared facet.
-Optional one-line **Upstream / Downstream** and **Same author** groups.
-Optional closing observation at the pattern level if there is a real one.
-Cap at 12 recommendations; cut rather than explain. Link every repo name as [owner/repo](https://github.com/owner/repo).
-Write the section titles only in ${LANG_NAME[lang]} (no bilingual titles).`;
+function reportInstructions(lang: Lang) {
+  return `You write the final repo-compass analysis as structured data. Write every string in ${LANG_NAME[lang]}; keep repo names as owner/repo.
+Short, plain sentences. No markdown, no links, no numbers that are not in the data (the UI shows stars, ★/day, last push and health next to each repo, so don't repeat them unless a comparison needs one).
+Every comparative claim must be traceable to a number or README fact in the data. Only use repos that appear in candidates.
+"tier" (3 = shares 3+ facets or same job) and "shared" were graded by a classifier; health columns come from the GitHub API.
+alternatives: candidates with relation "alternative" or same_job ≥ 0.5, best 2-4. closest: other tier 3/2 candidates. notes: the rest worth mentioning. Don't list a repo twice.
+If the original is clearly the best pick for its job, say so in the verdict; if it's a thin wrapper and its upstream is what people want, say that.`;
 }
 
 // --------------------------------------------------------------------- main
 
-export type Result = { original: Health; overview: Overview; candidates: Candidate[]; report: string };
+export type Result = { original: Health; overview: Overview; candidates: Candidate[]; report: Report };
 
 export async function analyze(full: string, lang: Lang, writer: Writer): Promise<Result> {
   // 1. Read the repo
@@ -204,7 +230,7 @@ export async function analyze(full: string, lang: Lang, writer: Writer): Promise
 
   // 2. Facets
   step(writer, "facets", "running");
-  const ov = await decompose(canonical, meta, readme, tree, manifests);
+  const ov = await decompose(lang, canonical, meta, readme, tree, manifests);
   const facets: Facet[] = ov.facets.map(({ type, label, description }) => ({ type, label, description }));
   const overview: Overview = { repo: canonical, summary: ov.summary, upstream: ov.upstream, facets };
   writer.write({ type: "data-overview", id: "overview", data: overview });
@@ -268,15 +294,22 @@ export async function analyze(full: string, lang: Lang, writer: Writer): Promise
   writer.write({ type: "data-candidates", id: "candidates", data: candidates });
   step(writer, "tier", "done", `${candidates.length} kept, ${graded.length - candidates.length} dropped`);
 
-  // 7. Report
+  // 7. Report, streamed as a partial object so cards fill in as it writes
   step(writer, "report", "running");
   const result = streamText({
     model: MODEL,
+    output: Output.object({ schema: reportSchema }),
     instructions: reportInstructions(lang),
     prompt: JSON.stringify({ original, overview, candidates }),
   });
-  writer.merge(toUIMessageStream({ stream: result.stream, sendStart: false, sendFinish: false }));
-  const report = await result.text;
+  let last = 0;
+  for await (const partial of result.partialOutputStream) {
+    if (Date.now() - last < 150) continue;
+    last = Date.now();
+    writer.write({ type: "data-report", id: "report", data: partial as DeepPartial<Report> });
+  }
+  const report = (await result.output) as Report;
+  writer.write({ type: "data-report", id: "report", data: report });
   step(writer, "report", "done");
 
   return { original, overview, candidates, report };

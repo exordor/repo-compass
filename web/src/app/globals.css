@@ -1,46 +1,61 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #fbfaf7;
+  --paper: #f3f6f5;
   --panel: #ffffff;
-  --ink: #1c1b18;
-  --muted: #6b675e;
-  --line: #e7e3da;
-  --accent: #c2410c;
-  --accent-soft: #fff1e8;
-  --good: #15803d;
-  --warn: #b45309;
-  --bad: #b91c1c;
+  --ink: #15232c;
+  --muted: #5d6d76;
+  --rule: #d3dcde;
+  --sea: #0e6b70;
+  --sea-soft: #e3f0ef;
+  --up: #2e6db4;
+  --alt: #b7791f;
+  --down: #2e8b57;
+  --peer: #8896a0;
+  --kin: #8a5cb8;
+  --good: #2e8b57;
+  --warn: #b7791f;
+  --bad: #b8433a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #12110f;
-    --panel: #1b1a17;
-    --ink: #ece9e2;
-    --muted: #a19c90;
-    --line: #2e2c27;
-    --accent: #fb923c;
-    --accent-soft: #2a1a10;
-    --good: #4ade80;
-    --warn: #fbbf24;
-    --bad: #f87171;
+    --paper: #0f181d;
+    --panel: #16232a;
+    --ink: #e4ecee;
+    --muted: #93a3ab;
+    --rule: #2a3a42;
+    --sea: #4fb8b4;
+    --sea-soft: #173236;
+    --up: #6fa6e6;
+    --alt: #e0a84a;
+    --down: #5cc08a;
+    --peer: #8d9aa3;
+    --kin: #b48be0;
+    --good: #5cc08a;
+    --warn: #e0a84a;
+    --bad: #e2786e;
   }
 }
 
 @theme inline {
-  --color-bg: var(--bg);
+  --color-paper: var(--paper);
   --color-panel: var(--panel);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
-  --color-line: var(--line);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
+  --color-rule: var(--rule);
+  --color-sea: var(--sea);
+  --color-sea-soft: var(--sea-soft);
+  --color-up: var(--up);
+  --color-alt: var(--alt);
+  --color-down: var(--down);
+  --color-peer: var(--peer);
+  --color-kin: var(--kin);
   --color-good: var(--good);
   --color-warn: var(--warn);
   --color-bad: var(--bad);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-schibsted), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
 html {
@@ -48,14 +63,24 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background: var(--paper);
   color: var(--ink);
+  font-feature-settings: "tnum" 1;
 }
 
-.report { font-size: 1.0625rem; }
-.report h2, .report p > strong:only-child { display: block; margin-top: 2rem; margin-bottom: 0.5rem; font-size: 1.25rem; }
-.report p { margin: 0.85rem 0; line-height: 1.85; }
-.report ul { margin: 0.75rem 0 0.75rem 1.4rem; list-style: disc; }
-.report li { margin: 0.6rem 0; line-height: 1.8; }
-.report a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
-.report code { font-family: var(--font-geist-mono); font-size: 0.9em; }
+:focus-visible {
+  outline: 2px solid var(--sea);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Contour lines behind the hero: the one decorative element, tied to the chart metaphor. */
+.contours {
+  background-image:
+    radial-gradient(circle at 85% 20%, transparent 0 60px, var(--rule) 61px 62px, transparent 63px 110px, var(--rule) 111px 112px, transparent 113px 170px, var(--rule) 171px 172px, transparent 173px 240px, var(--rule) 241px 242px, transparent 243px);
+  background-repeat: no-repeat;
+}
