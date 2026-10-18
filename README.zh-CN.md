@@ -58,20 +58,20 @@ repo-compass 是标准的 [Agent Skill](https://agentskills.io)：一个带 `SKI
 **作为 Claude Code 插件**
 
 ```
-/plugin marketplace add OWNER/repo-compass
+/plugin marketplace add exordor/repo-compass
 /plugin install repo-compass@repo-compass
 ```
 
 **任何兼容 skill 的 agent**
 
 ```bash
-npx skills add OWNER/repo-compass
+npx skills add exordor/repo-compass
 ```
 
 **手动**
 
 ```bash
-git clone https://github.com/OWNER/repo-compass
+git clone https://github.com/exordor/repo-compass
 cp -r repo-compass/skills/github-similar-repos ~/.claude/skills/
 ```
 

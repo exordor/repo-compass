@@ -58,20 +58,20 @@ repo-compass is a standard [Agent Skill](https://agentskills.io): a folder with 
 **Claude Code plugin**
 
 ```
-/plugin marketplace add OWNER/repo-compass
+/plugin marketplace add exordor/repo-compass
 /plugin install repo-compass@repo-compass
 ```
 
 **Any skill-compatible agent**
 
 ```bash
-npx skills add OWNER/repo-compass
+npx skills add exordor/repo-compass
 ```
 
 **Manual**
 
 ```bash
-git clone https://github.com/OWNER/repo-compass
+git clone https://github.com/exordor/repo-compass
 cp -r repo-compass/skills/github-similar-repos ~/.claude/skills/
 ```
 

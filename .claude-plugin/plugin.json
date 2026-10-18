@@ -5,8 +5,8 @@
   "author": {
     "name": "repo-compass contributors"
   },
-  "homepage": "https://github.com/OWNER/repo-compass",
-  "repository": "https://github.com/OWNER/repo-compass",
+  "homepage": "https://github.com/exordor/repo-compass",
+  "repository": "https://github.com/exordor/repo-compass",
   "license": "MIT",
   "keywords": ["github", "recommendation", "similar-repositories", "agent-skill", "open-source-health"]
 }
