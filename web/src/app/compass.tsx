@@ -321,15 +321,15 @@ function CandidateTable({ rows, lang }: { rows: Candidate[]; lang: Lang }) {
     <div className="rounded-2xl border border-line bg-panel">
       <h2 className="px-6 pt-5 text-sm font-medium uppercase tracking-wider text-muted">{t.candidates}</h2>
       <div className="overflow-x-auto">
-        <table className="mt-3 w-full min-w-[720px] text-left text-[15px]">
+        <table className="mt-3 w-full min-w-[840px] text-left text-[15px]">
           <thead className="text-muted">
             <tr className="border-b border-line">
               <th className="px-6 py-3 font-normal">{t.tier}</th>
               <th className="py-3 font-normal">repo</th>
-              <th className="py-3 text-right font-normal">★</th>
-              <th className="py-3 text-right font-normal">{t.perDay}</th>
-              <th className="py-3 text-right font-normal">{t.push}</th>
-              <th className="py-3 text-right font-normal">{t.score}</th>
+              <th className="whitespace-nowrap px-3 py-3 text-right font-normal">★</th>
+              <th className="whitespace-nowrap px-3 py-3 text-right font-normal">{t.perDay}</th>
+              <th className="whitespace-nowrap px-3 py-3 text-right font-normal">{t.push}</th>
+              <th className="whitespace-nowrap px-3 py-3 text-right font-normal">{t.score}</th>
               <th className="px-6 py-3 font-normal">{t.shared}</th>
             </tr>
           </thead>
@@ -345,10 +345,10 @@ function CandidateTable({ rows, lang }: { rows: Candidate[]; lang: Lang }) {
                   {c.archived && <span className="ml-1 text-xs text-bad">ARCHIVED</span>}
                   <div className="mt-1 max-w-sm truncate text-sm text-muted">{c.description}</div>
                 </td>
-                <td className="py-3.5 text-right font-mono">{fmtStars(c.stars)}</td>
-                <td className="py-3.5 text-right font-mono">{c.stars_per_day}</td>
-                <td className="py-3.5 text-right font-mono">{t.days(c.pushed_days_ago)}</td>
-                <td className={`py-3.5 text-right font-mono ${scoreColor(c.score)}`}>{c.score}</td>
+                <td className="whitespace-nowrap px-3 py-3.5 text-right font-mono">{fmtStars(c.stars)}</td>
+                <td className="whitespace-nowrap px-3 py-3.5 text-right font-mono">{c.stars_per_day}</td>
+                <td className="whitespace-nowrap px-3 py-3.5 text-right font-mono">{t.days(c.pushed_days_ago)}</td>
+                <td className={`whitespace-nowrap px-3 py-3.5 text-right font-mono ${scoreColor(c.score)}`}>{c.score}</td>
                 <td className="px-6 py-3.5 text-muted">{c.shared.join(" · ") || "—"}</td>
               </tr>
             ))}
