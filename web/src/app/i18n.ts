@@ -64,6 +64,10 @@ export const T = {
     } satisfies Record<Relation, string>,
     archived: "已归档",
     errorFallback: "分析没有完成。请检查链接后重试。",
+    errors: {
+      bad_url: "这不是 GitHub 仓库链接。请输入类似 https://github.com/owner/repo 或 owner/repo。",
+      rate_limited: "今天的 2 次新分析已经用完。已经分析过的仓库仍然可以直接查看，明天可以继续分析新仓库。",
+    },
   },
   en: {
     headline: "Understand a GitHub repo before you depend on it",
@@ -125,6 +129,10 @@ export const T = {
     } satisfies Record<Relation, string>,
     archived: "Archived",
     errorFallback: "The analysis didn't finish. Check the link and try again.",
+    errors: {
+      bad_url: "That isn't a GitHub repo link. Enter something like https://github.com/owner/repo or owner/repo.",
+      rate_limited: "You've used today's 2 new analyses. Repos already analyzed still open from cache; new ones work again tomorrow.",
+    },
   },
 } as const;
 

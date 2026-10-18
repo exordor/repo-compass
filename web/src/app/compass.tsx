@@ -14,12 +14,13 @@ const EXAMPLES = ["karpathy/nanochat", "ollama/ollama", "shadcn-ui/ui", "hugohe3
 
 type Notes = Record<string, { what?: string; differs?: string; pickIt?: string; pickOriginal?: string }>;
 
-function parseError(e: Error | undefined, fallback: string) {
+function parseError(e: Error | undefined, t: (typeof T)[Lang]) {
   if (!e) return null;
   try {
-    return (JSON.parse(e.message) as { error?: string }).error ?? fallback;
+    const body = JSON.parse(e.message) as { error?: string; code?: keyof (typeof T)[Lang]["errors"] };
+    return (body.code && t.errors[body.code]) || body.error || t.errorFallback;
   } catch {
-    return e.message || fallback;
+    return e.message || t.errorFallback;
   }
 }
 
@@ -148,7 +149,7 @@ export default function Compass() {
       <main className="mx-auto max-w-6xl px-5 sm:px-8">
         {error && (
           <div role="alert" className="mt-8 rounded-xl border-l-4 border-bad bg-panel px-6 py-5 text-lg">
-            {parseError(error, t.errorFallback)}
+            {parseError(error, t)}
           </div>
         )}
 

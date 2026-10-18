@@ -16,15 +16,15 @@ function lastUserText(messages: CompassMessage[]): string {
   return last?.parts.map((p) => (p.type === "text" ? p.text : "")).join("") ?? "";
 }
 
-function error(status: number, message: string) {
-  return Response.json({ error: message }, { status });
+function error(status: number, code: "bad_url" | "rate_limited", message: string) {
+  return Response.json({ error: message, code }, { status });
 }
 
 export async function POST(req: Request) {
   const body = (await req.json()) as { messages: CompassMessage[]; lang?: Lang };
   const lang: Lang = body.lang === "en" ? "en" : "zh";
   const full = parseRepo(lastUserText(body.messages));
-  if (!full) return error(400, "Enter a GitHub URL like https://github.com/owner/repo");
+  if (!full) return error(400, "bad_url", "Enter a GitHub URL like https://github.com/owner/repo");
 
   const key = `result:v3:${full.toLowerCase()}:${lang}`;
   const cached = (await cache.get(key).catch(() => null)) as Result | null;
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     const rlKey = `rl:${ip}:${new Date().toISOString().slice(0, 10)}`;
     const used = Number((await cache.get(rlKey).catch(() => 0)) ?? 0);
     if (used >= DAILY_LIMIT)
-      return error(429, `Daily limit reached (${DAILY_LIMIT} new analyses per IP). Cached repos still work.`);
+      return error(429, "rate_limited", `Daily limit reached (${DAILY_LIMIT} new analyses per IP). Cached repos still work.`);
     await cache.set(rlKey, used + 1, { ttl: 26 * 3600 }).catch(() => {});
   }
 
