@@ -8,5 +8,15 @@
   "homepage": "https://github.com/exordor/repo-compass",
   "repository": "https://github.com/exordor/repo-compass",
   "license": "MIT",
-  "keywords": ["github", "recommendation", "similar-repositories", "agent-skill", "open-source-health"]
+  "keywords": [
+    "github",
+    "similar-repositories",
+    "alternatives",
+    "repository-recommendation",
+    "agent-skill",
+    "claude-code",
+    "repo-health",
+    "open-source-health",
+    "upstream-downstream"
+  ]
 }

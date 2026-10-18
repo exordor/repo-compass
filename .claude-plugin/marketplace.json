@@ -10,10 +10,20 @@
     {
       "name": "repo-compass",
       "source": "./",
-      "description": "Facet-based similar-repo recommendation and positioning for any GitHub repository.",
+      "description": "Find similar GitHub repositories and better alternatives for any repo: facet-based recommendation, positioning and health scores.",
       "version": "0.1.0",
       "category": "productivity",
-      "keywords": ["github", "recommendation", "similar-repositories"]
+      "keywords": [
+        "github",
+        "similar-repositories",
+        "alternatives",
+        "repository-recommendation",
+        "agent-skill",
+        "claude-code",
+        "repo-health",
+        "open-source-health",
+        "upstream-downstream"
+      ]
     }
   ]
 }

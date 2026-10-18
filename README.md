@@ -2,13 +2,16 @@
 
 # repo-compass
 
-**Where does this GitHub repo sit, and should I use it?**
+**Find similar GitHub repositories and better alternatives — for any repo.**
 
-An agent skill that turns one GitHub URL into a map: what the repo is made of, what it builds on, who builds on it, which alternatives exist, and how healthy each one is — with every claim traced to a fetched page or an API number.
+*Where does this GitHub repo sit, and should I use it?*
+
+An agent skill (and Claude Code plugin) that turns one GitHub URL into a map: what the repo is made of, what it builds on, who builds on it, which alternatives exist, and how healthy each one is — with every claim traced to a fetched page or an API number.
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/exordor/repo-compass?style=flat)](https://github.com/exordor/repo-compass/stargazers)
 [![Agent Skill](https://img.shields.io/badge/format-Agent%20Skill-black)](skills/github-similar-repos/SKILL.md)
 [![Works with Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-7c3aed)](#install)
 
@@ -152,6 +155,28 @@ All six outputs are in Chinese because that is the language the tester used; the
 - [ ] Dependents graph via the GitHub dependency API where available
 - [ ] Per-facet "crowded facet" overflow pages instead of truncating
 - [ ] Eval set: a few dozen repo → expected-peers pairs to measure regressions
+
+## FAQ
+
+**How do I find similar GitHub repositories?**
+GitHub has no "related repositories" panel. Install repo-compass in your agent, paste any repo URL and ask *"what's similar?"*. You get peers grouped by what they share (same problem, same technical route, same ecosystem, same distinctive feature), each with a one-line reason.
+
+**How do I find alternatives to a GitHub project?**
+Ask *"is there something better than this?"*. The **Alternatives** section lists repos that do the same job, with stars, stars/day, last push and a "better for…" sentence for each, then a verdict.
+
+**How can I tell whether a GitHub repo is still maintained?**
+`scripts/repo_health.py` scores any repo 0–100 from days since last push, issue close rate, PR merge rate, releases and log-scaled stars. It runs standalone too: `python skills/github-similar-repos/scripts/repo_health.py --tier "1:owner/repo"`.
+
+**Is this a wrapper, or the real thing?**
+The **Positioning** paragraph reads the dependency manifests to name what the repo builds on (upstream) and searches for ports, plugins and forks that build on it (downstream).
+
+**Which agents does it work with?**
+Any agent that loads [Agent Skills](https://agentskills.io) and can search the web: Claude Code, OpenAI Codex, Cursor, Gemini CLI and others.
+
+**How is it different from GitHub Trending, Topics or SimRepo?**
+See [How it compares](#how-it-compares). In short: it finds small repos that star-based tools miss, and it explains every recommendation.
+
+If repo-compass helped you pick a dependency, a ⭐ helps other people find it.
 
 ## Contributing
 

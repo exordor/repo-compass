@@ -2,13 +2,16 @@
 
 # repo-compass
 
-**这个 GitHub 仓库到底处在什么位置，我该用它吗？**
+**为任意 GitHub 仓库找相似项目和更好的替代品。**
 
-一个 agent skill：输入一个 GitHub 链接，输出一张地图——它由哪几个面构成、建在什么上面、谁建在它上面、有哪些替代品、每一个的健康状况如何。每一句判断都能追溯到抓取过的页面或 API 数字。
+*这个 GitHub 仓库到底处在什么位置，我该用它吗？*
+
+一个 agent skill（也是 Claude Code 插件）：输入一个 GitHub 链接，输出一张地图——它由哪几个面构成、建在什么上面、谁建在它上面、有哪些替代品、每一个的健康状况如何。每一句判断都能追溯到抓取过的页面或 API 数字。
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/exordor/repo-compass?style=flat)](https://github.com/exordor/repo-compass/stargazers)
 [![Agent Skill](https://img.shields.io/badge/format-Agent%20Skill-black)](skills/github-similar-repos/SKILL.md)
 [![Works with Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-7c3aed)](#安装)
 
@@ -150,6 +153,28 @@ star 数永远和**创建以来的日增**并排显示。30 天 2 万星和 5 �
 - [ ] 在可用的地方接 GitHub dependency API 拿下游依赖图
 - [ ] 拥挤切面的溢出页，而不是截断
 - [ ] 评测集：几十对"仓库 → 预期同类"，用来测回归
+
+## 常见问题
+
+**怎么找相似的 GitHub 仓库？**
+GitHub 没有"相关仓库"功能。在 agent 里装好 repo-compass，贴任意仓库链接问"有什么类似的"，得到按共同点分组的同类项目（同一问题、同一技术路线、同一生态、同一标志性特点），每个都附一句理由。
+
+**怎么找某个开源项目的替代品？**
+问"有没有比它更好的"。**替代**一节列出做同一件事的仓库，附 star、日均 star、最近推送时间和一句"更适合……"，最后给出结论。
+
+**怎么判断一个 GitHub 仓库还有没有人维护？**
+`scripts/repo_health.py` 根据最近推送天数、issue 关闭率、PR 合并率、是否发版和对数化的 star 给出 0–100 分，也可以单独运行：`python skills/github-similar-repos/scripts/repo_health.py --tier "1:owner/repo"`。
+
+**它是套壳，还是真东西？**
+**定位**一段会读依赖清单，说明它建在什么之上（上游），并搜索基于它的移植、插件和 fork（下游）。
+
+**支持哪些 agent？**
+任何能加载 [Agent Skills](https://agentskills.io) 并能联网搜索的 agent：Claude Code、OpenAI Codex、Cursor、Gemini CLI 等。
+
+**和 GitHub Trending、Topics、SimRepo 有什么区别？**
+见[和已有工具的区别](#和已有工具的区别)。简单说：它能找到基于 star 的工具漏掉的小仓库，并解释每一条推荐。
+
+如果 repo-compass 帮你选定了依赖，点个 ⭐ 能让更多人发现它。
 
 ## 贡献
 
