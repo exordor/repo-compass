@@ -20,7 +20,7 @@ Pipeline (`src/lib/analyze.ts`):
 | `GITHUB_TOKEN` | recommended | Public-read token; raises rate limits and enables close/merge rates |
 | `ANALYSIS_MODEL` | no | Default `anthropic/claude-sonnet-5.5` |
 | `TIER_MODEL` | no | Default `typesafe-ai/jev` |
-| `RATE_LIMIT_PER_DAY` | no | New analyses per IP per day, default 5. Cached repos (24h) don't count |
+| `RATE_LIMIT_PER_DAY` | no | New analyses per IP per day, default 2 (demo). Cached repos (24h) don't count |
 
 ```bash
 pnpm install

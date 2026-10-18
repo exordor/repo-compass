@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import RelationGraph from "./graph";
 import type { Health } from "@/lib/github";
 import type { Candidate, CompassMessage, DataParts, StepId } from "@/lib/types";
 
@@ -41,7 +42,7 @@ const T = {
     perDay: "★/天",
     cached: "缓存结果（24 小时内）",
     took: "耗时",
-    note: "通常需要 1–3 分钟。每个 IP 每天可做 5 次新分析，已分析过的仓库直接读取缓存。",
+    note: "体验版：通常需要 1–3 分钟，每个 IP 每天可做 2 次新分析；已分析过的仓库直接读取缓存，不占次数。",
     days: (d: number) => (d === 0 ? "今天" : `${d} 天前`),
   },
   en: {
@@ -71,7 +72,7 @@ const T = {
     perDay: "★/day",
     cached: "Cached result (within 24h)",
     took: "Took",
-    note: "Usually 1–3 minutes. 5 new analyses per IP per day; repos analysed before come from cache.",
+    note: "Demo: usually 1–3 minutes, 2 new analyses per IP per day; repos analysed before come from cache and don't count.",
     days: (d: number) => (d === 0 ? "today" : `${d}d ago`),
   },
 } as const;
@@ -244,6 +245,10 @@ export default function Compass() {
                 ))}
               </div>
             </div>
+          )}
+
+          {view.original && view.candidates && view.candidates.length > 0 && (
+            <RelationGraph original={view.original} rows={view.candidates} lang={lang} />
           )}
 
           {view.report && (

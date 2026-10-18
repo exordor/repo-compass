@@ -6,7 +6,7 @@ import type { CompassMessage } from "@/lib/types";
 
 export const maxDuration = 300;
 
-const DAILY_LIMIT = Number(process.env.RATE_LIMIT_PER_DAY ?? 5);
+const DAILY_LIMIT = Number(process.env.RATE_LIMIT_PER_DAY ?? 2);
 const CACHE_TTL = 24 * 3600;
 
 const cache = getCache({ namespace: "repo-compass" });
