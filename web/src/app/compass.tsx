@@ -205,7 +205,7 @@ export default function Compass() {
       {error && <div className="mt-6 rounded-lg border border-bad/40 bg-bad/5 px-4 py-3 text-sm text-bad">{parseError(error)}</div>}
 
       {started && (
-        <section className="mt-10 grid gap-6">
+        <section className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-6">
           {!view.meta?.cached && view.steps.size > 0 && (
             <ol className="grid gap-1.5 rounded-xl border border-line bg-panel p-4 text-sm">
               {STEP_ORDER.map((id) => {
@@ -249,7 +249,7 @@ export default function Compass() {
           {view.report && (
             <article className="rounded-xl border border-line bg-panel p-5 sm:p-6">
               <h2 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted">{t.report}</h2>
-              <div className="report text-[15px]">
+              <div className="report text-[15px] break-words">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{view.report}</ReactMarkdown>
               </div>
             </article>
