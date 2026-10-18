@@ -157,9 +157,11 @@ async function grade(original: Overview & { description: string | null }, cand: 
   return { shared, sameJob, relation };
 }
 
+// Jev is conservative on same_job (clear substitutes land around 0.35-0.45),
+// so its relation choice is trusted as a second signal.
 function tierOf(shared: number, sameJob: number, relation: string): 0 | 1 | 2 | 3 {
-  if (sameJob >= 0.5 || shared >= 3) return 3;
-  if (shared === 2) return 2;
+  if (sameJob >= 0.5 || shared >= 3 || (relation === "alternative" && sameJob >= 0.3)) return 3;
+  if (shared === 2 || relation === "alternative") return 2;
   if (shared === 1 || relation === "upstream" || relation === "downstream") return 1;
   return 0;
 }
@@ -179,7 +181,7 @@ Structure (markdown, headings as bold lines, no H1):
 Optional one-line **Upstream / Downstream** and **Same author** groups.
 Optional closing observation at the pattern level if there is a real one.
 Cap at 12 recommendations; cut rather than explain. Link every repo name as [owner/repo](https://github.com/owner/repo).
-Translate the section titles into ${LANG_NAME[lang]}.`;
+Write the section titles only in ${LANG_NAME[lang]} (no bilingual titles).`;
 }
 
 // --------------------------------------------------------------------- main
@@ -245,8 +247,16 @@ export async function analyze(full: string, lang: Lang, writer: Writer): Promise
         console.error("jev failed", h.repo, e);
         g.shared = [v.found_by];
       }
+      // "upstream" needs evidence: the original must name the candidate in its README or upstream list.
+      const name = h.repo.split("/")[1].toLowerCase();
+      const namedByOriginal =
+        readme.toLowerCase().includes(h.repo.toLowerCase()) || overview.upstream.some((u) => u.toLowerCase().includes(name));
       const relation: Relation =
-        h.repo.split("/")[0].toLowerCase() === owner ? "same_author" : g.relation === "unrelated" ? "peer" : g.relation;
+        h.repo.split("/")[0].toLowerCase() === owner
+          ? "same_author"
+          : g.relation === "unrelated" || (g.relation === "upstream" && !namedByOriginal)
+            ? "peer"
+            : g.relation;
       const tier = g.relation === "unrelated" && g.shared.length === 0 ? 0 : tierOf(g.shared.length, g.sameJob, relation);
       return { ...h, tier, relation, shared: g.shared, same_job: Math.round(g.sameJob * 100) / 100, found_by: v.found_by, why: v.why } satisfies Candidate;
     }),

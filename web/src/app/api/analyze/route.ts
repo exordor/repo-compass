@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   const full = parseRepo(lastUserText(body.messages));
   if (!full) return error(400, "Enter a GitHub URL like https://github.com/owner/repo");
 
-  const key = `result:v1:${full.toLowerCase()}:${lang}`;
+  const key = `result:v2:${full.toLowerCase()}:${lang}`;
   const cached = (await cache.get(key).catch(() => null)) as Result | null;
 
   if (!cached) {
