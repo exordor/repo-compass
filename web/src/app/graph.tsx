@@ -48,7 +48,7 @@ export default function RelationGraph({ original, rows, lang, selected, onSelect
 
   return (
     <div>
-      <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-muted">
+      <ul className="hidden flex-wrap gap-x-5 gap-y-2 text-[15px] text-muted md:flex">
         {present.map((rel) => (
           <li key={rel} className="flex items-center gap-2">
             <span className="inline-block h-3 w-3 rounded-full" style={{ background: REL_COLOR[rel] }} />
@@ -57,7 +57,35 @@ export default function RelationGraph({ original, rows, lang, selected, onSelect
         ))}
       </ul>
 
-      <svg viewBox={vb.join(" ")} className="mt-2 block w-full" role="group" aria-label={t.map}>
+      {/* Phones: the radial map gets too small to read, so list the same nodes by relation. */}
+      <div className="mt-5 grid gap-5 md:hidden">
+        {present.map((rel) => (
+          <div key={rel}>
+            <p className="text-[15px] font-medium" style={{ color: REL_COLOR[rel] }}>
+              {t.relation[rel]}
+            </p>
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {ordered
+                .filter((r) => r.relation === rel)
+                .map((r) => (
+                  <li key={r.repo}>
+                    <button
+                      onClick={() => onSelect(selected === r.repo ? null : r.repo)}
+                      aria-pressed={selected === r.repo}
+                      className={`rounded-full border px-3.5 py-1.5 font-mono text-[15px] ${
+                        selected === r.repo ? "border-ink bg-ink text-paper" : "border-rule"
+                      }`}
+                    >
+                      {r.repo.split("/")[1]}
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <svg viewBox={vb.join(" ")} className="mt-2 hidden w-full md:block" role="group" aria-label={t.map}>
         {tiers.map((tier) => (
           <circle key={tier} cx={CX} cy={CY} r={RING[tier] + 9} fill="none" stroke="var(--rule)" strokeDasharray="2 6" />
         ))}

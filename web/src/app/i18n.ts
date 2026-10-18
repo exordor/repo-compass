@@ -41,7 +41,7 @@ export const T = {
     pickIt: "选它，如果",
     pickOriginal: "选原仓库，如果",
     map: "关系地图",
-    mapSub: "离中心越近越相关，圆越大 Star 越多。点击节点查看详情。",
+    mapSub: "离中心越近越相关，圆越大 Star 越多。点击任意项目查看详情。",
     whatItIs: "它是什么",
     builtOn: "建立在",
     facets: "从这几个角度找同类",

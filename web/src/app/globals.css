@@ -74,6 +74,10 @@ body {
   border-radius: 4px;
 }
 
+/* Map nodes show selection with their own stroke; keep the keyboard ring, drop the click box. */
+svg [role="button"]:focus { outline: none; }
+svg [role="button"]:focus-visible circle:nth-of-type(2) { stroke: var(--ink); stroke-width: 3; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

@@ -91,6 +91,12 @@ export default function Compass() {
   const byRepo = new Map((view.candidates ?? []).map((c) => [c.repo, c]));
   const selectedRow = selected ? byRepo.get(selected) : undefined;
 
+  // Below the two-column breakpoint the panel sits under the map, so bring it into view.
+  function selectFromMap(repo: string | null) {
+    setSelected(repo);
+    if (window.innerWidth < 1024) requestAnimationFrame(() => document.getElementById("detail")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
   function focusOnMap(repo: string) {
     setSelected(repo);
     document.getElementById("map")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -177,9 +183,9 @@ export default function Compass() {
                 <SectionTitle title={t.map} sub={t.mapSub} />
                 <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
                   <div className="rounded-3xl bg-panel p-5 sm:p-7">
-                    <RelationGraph original={view.original} rows={view.candidates} lang={lang} selected={selected} onSelect={setSelected} />
+                    <RelationGraph original={view.original} rows={view.candidates} lang={lang} selected={selected} onSelect={selectFromMap} />
                   </div>
-                  <aside className="lg:sticky lg:top-24 lg:self-start" aria-live="polite">
+                  <aside id="detail" className="scroll-mt-24 lg:sticky lg:top-24 lg:self-start" aria-live="polite">
                     {selectedRow ? (
                       <CandidateDetail row={selectedRow} note={view.notes[selectedRow.repo]} t={t} onBack={() => setSelected(null)} />
                     ) : (
@@ -372,7 +378,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 function Verdict({ h, report, t }: { h: Health; report?: DeepPartial<Report>; t: TT }) {
   const stage = report?.stage as Stage | undefined;
   return (
-    <section className="grid gap-8 rounded-3xl bg-panel p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_auto]">
+    <section className="grid gap-8 rounded-3xl bg-panel p-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:p-10">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3">
           <a href={h.url} target="_blank" rel="noreferrer" className="break-all font-mono text-[1.6rem] font-semibold underline-offset-4 hover:underline">
@@ -400,12 +406,12 @@ function Verdict({ h, report, t }: { h: Health; report?: DeepPartial<Report>; t:
 
         <div className="mt-10 grid max-w-2xl grid-cols-2 gap-6 sm:grid-cols-4">
           <Stat label={t.stars} value={fmtStars(h.stars)} />
-          <Stat label={t.perDay} value={`+${h.stars_per_day}`} />
+          <Stat label={t.perDay} value={`+${h.stars_per_day >= 10 ? Math.round(h.stars_per_day) : h.stars_per_day}`} />
           <Stat label={t.pushed} value={t.days(h.pushed_days_ago)} />
           <Stat label={t.license} value={h.license ?? "—"} />
         </div>
       </div>
-      <div className="flex items-start lg:pt-2">
+      <div className="flex items-start sm:col-start-2 sm:row-start-1 sm:pt-2">
         <HealthDial score={h.score} t={t} />
       </div>
     </section>
@@ -546,11 +552,25 @@ function CandidateDetail({ row, note, t, onBack }: { row: Candidate; note?: Note
           </ul>
         </div>
       )}
-      {(note?.differs || note?.pickIt) && (
+      {note?.differs && (
         <div className="mt-5">
           <p className="text-[15px] text-muted">{t.differs}</p>
-          <p className="mt-1 text-[17px] leading-7">{note.differs || note.pickIt}</p>
+          <p className="mt-1 text-[17px] leading-7">{note.differs}</p>
         </div>
+      )}
+      {note?.pickIt && (
+        <dl className="mt-5 grid gap-4">
+          <div className="border-l-4 pl-4" style={{ borderColor: "var(--alt)" }}>
+            <dt className="text-[15px] font-medium text-muted">{t.pickIt}</dt>
+            <dd className="mt-1 text-[17px] leading-7">{note.pickIt}</dd>
+          </div>
+          {note.pickOriginal && (
+            <div className="border-l-4 border-sea pl-4">
+              <dt className="text-[15px] font-medium text-muted">{t.pickOriginal}</dt>
+              <dd className="mt-1 text-[17px] leading-7">{note.pickOriginal}</dd>
+            </div>
+          )}
+        </dl>
       )}
 
       <div className="mt-6 grid grid-cols-2 gap-5 border-t border-rule pt-5">

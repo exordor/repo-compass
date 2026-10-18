@@ -21,6 +21,23 @@ function error(status: number, code: "bad_url" | "rate_limited", message: string
 }
 
 export async function POST(req: Request) {
+  // Dev-only: replay a recorded SSE stream so UI work doesn't need gateway credentials.
+  if (process.env.NODE_ENV === "development" && process.env.ANALYZE_FIXTURE) {
+    const { readFile } = await import("node:fs/promises");
+    const body = await readFile(process.env.ANALYZE_FIXTURE, "utf8");
+    const chunks = body.split(/(?<=\n\n)/);
+    const stream = new ReadableStream({
+      async start(c) {
+        for (const ch of chunks) {
+          c.enqueue(new TextEncoder().encode(ch));
+          await new Promise((r) => setTimeout(r, 2));
+        }
+        c.close();
+      },
+    });
+    return new Response(stream, { headers: { "content-type": "text/event-stream", "x-vercel-ai-ui-message-stream": "v1" } });
+  }
+
   const body = (await req.json()) as { messages: CompassMessage[]; lang?: Lang };
   const lang: Lang = body.lang === "en" ? "en" : "zh";
   const full = parseRepo(lastUserText(body.messages));
