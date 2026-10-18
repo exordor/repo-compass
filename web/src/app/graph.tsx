@@ -29,6 +29,9 @@ const LABEL: Record<"zh" | "en", Record<Relation, string>> = {
   en: { upstream: "upstream", alternative: "alternative", downstream: "downstream", peer: "peer", same_author: "same author" },
 };
 
+// Panel-coloured outline so labels stay readable over edges.
+const halo = { paintOrder: "stroke", stroke: "var(--panel)", strokeWidth: 4, strokeLinejoin: "round" } as const;
+
 const nodeR = (stars: number) => 4 + 2.6 * Math.log10(stars + 1);
 const short = (s: string) => (s.length > 22 ? `${s.slice(0, 21)}…` : s);
 
@@ -50,6 +53,12 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
   });
 
   const present = ORDER.filter((rel) => rows.some((r) => r.relation === rel));
+  const tiers = [3, 2, 1].filter((t) => rows.some((r) => r.tier === t));
+  // Crop the canvas to the rings in use, leaving room for labels on both sides.
+  const outer = Math.max(...tiers.map((t) => RING[t])) + 16;
+  const padX = 175;
+  const padY = 40;
+  const vb = [CX - outer - padX, CY - outer - padY, 2 * (outer + padX), 2 * (outer + padY) + 20];
   const active = hover ? rows.find((r) => r.repo === hover) : undefined;
 
   return (
@@ -68,8 +77,8 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
       </div>
 
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="mx-auto block w-full min-w-[560px] max-w-[820px]" role="img" aria-label="relationship map">
-          {[3, 2, 1].map((t) => (
+        <svg viewBox={vb.join(" ")} className="mx-auto block w-full min-w-[560px] max-w-[820px]" role="img" aria-label="relationship map">
+          {tiers.map((t) => (
             <g key={t}>
               <circle cx={CX} cy={CY} r={RING[t] + 8} fill="none" stroke="var(--line)" strokeDasharray="3 5" />
               <text x={CX + 4} y={CY - RING[t] - 12} fontSize="10" fill="var(--muted)">
@@ -94,10 +103,10 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
 
           <g>
             <circle cx={CX} cy={CY} r={nodeR(original.stars) + 8} fill="var(--ink)" />
-            <text x={CX} y={CY + nodeR(original.stars) + 26} textAnchor="middle" fontSize="14" fontWeight="600" fill="var(--ink)" className="font-mono">
+            <text x={CX} y={CY + nodeR(original.stars) + 26} textAnchor="middle" fontSize="14" fontWeight="600" fill="var(--ink)" className="font-mono" {...halo}>
               {original.repo}
             </text>
-            <text x={CX} y={CY + nodeR(original.stars) + 42} textAnchor="middle" fontSize="11" fill="var(--muted)">
+            <text x={CX} y={CY + nodeR(original.stars) + 42} textAnchor="middle" fontSize="11" fill="var(--muted)" {...halo}>
               ★{original.stars.toLocaleString()} · {lang === "zh" ? "健康分" : "health"} {original.score}
             </text>
           </g>
@@ -121,6 +130,7 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
                     fontSize="12"
                     fill="var(--ink)"
                     className="font-mono"
+                    {...halo}
                   >
                     {short(r.repo.split("/")[1])}
                   </text>
