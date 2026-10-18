@@ -147,21 +147,21 @@ export default function Compass() {
   const started = messages.length > 0;
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-16">
+    <main className="mx-auto w-full max-w-5xl px-5 py-12 sm:px-8 sm:py-20">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <Link href="/" className="font-mono text-sm tracking-wide text-accent">
+          <Link href="/" className="font-mono text-base tracking-wide text-accent">
             ◈ repo-compass
           </Link>
-          <h1 className="mt-3 text-2xl font-semibold leading-tight sm:text-3xl">{t.tagline}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{t.sub}</p>
+          <h1 className="mt-4 text-3xl font-semibold leading-tight sm:text-[2.5rem]">{t.tagline}</h1>
+          <p className="mt-4 max-w-3xl text-lg leading-8 text-muted">{t.sub}</p>
         </div>
-        <div className="flex shrink-0 overflow-hidden rounded-md border border-line text-xs">
+        <div className="flex shrink-0 overflow-hidden rounded-md border border-line text-sm">
           {(["zh", "en"] as const).map((l) => (
             <button
               key={l}
               onClick={() => setLang(l)}
-              className={`px-2.5 py-1 ${lang === l ? "bg-ink text-bg" : "text-muted hover:text-ink"}`}
+              className={`px-3.5 py-1.5 ${lang === l ? "bg-ink text-bg" : "text-muted hover:text-ink"}`}
             >
               {l === "zh" ? "中文" : "EN"}
             </button>
@@ -170,7 +170,7 @@ export default function Compass() {
       </header>
 
       <form
-        className="mt-8 flex flex-col gap-2 sm:flex-row"
+        className="mt-10 flex flex-col gap-3 sm:flex-row"
         onSubmit={(e) => {
           e.preventDefault();
           run(input);
@@ -180,41 +180,41 @@ export default function Compass() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={t.placeholder}
-          className="min-w-0 flex-1 rounded-lg border border-line bg-panel px-4 py-3 font-mono text-sm outline-none focus:border-accent"
+          className="min-w-0 flex-1 rounded-lg border border-line bg-panel px-5 py-4 font-mono text-lg outline-none focus:border-accent"
           autoFocus
         />
         {busy ? (
-          <button type="button" onClick={stop} className="rounded-lg border border-line px-5 py-3 text-sm">
+          <button type="button" onClick={stop} className="rounded-lg border border-line px-7 py-4 text-lg">
             {t.running} ■
           </button>
         ) : (
-          <button type="submit" className="rounded-lg bg-accent px-5 py-3 text-sm font-medium text-white disabled:opacity-50" disabled={!input.trim()}>
+          <button type="submit" className="rounded-lg bg-accent px-7 py-4 text-lg font-medium text-white disabled:opacity-50" disabled={!input.trim()}>
             {t.go}
           </button>
         )}
       </form>
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted">
+      <div className="mt-5 flex flex-wrap items-center gap-2.5 text-base text-muted">
         <span>{t.examples}:</span>
         {EXAMPLES.map((e) => (
-          <button key={e} onClick={() => run(e)} disabled={busy} className="rounded-full border border-line px-2.5 py-0.5 font-mono hover:border-accent hover:text-ink">
+          <button key={e} onClick={() => run(e)} disabled={busy} className="rounded-full border border-line px-3.5 py-1 font-mono text-[15px] hover:border-accent hover:text-ink">
             {e}
           </button>
         ))}
       </div>
-      <p className="mt-2 text-xs text-muted">{t.note}</p>
+      <p className="mt-3 text-base leading-7 text-muted">{t.note}</p>
 
-      {error && <div className="mt-6 rounded-lg border border-bad/40 bg-bad/5 px-4 py-3 text-sm text-bad">{parseError(error)}</div>}
+      {error && <div className="mt-6 rounded-lg border border-bad/40 bg-bad/5 px-5 py-4 text-base text-bad">{parseError(error)}</div>}
 
       {started && (
-        <section className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-6">
+        <section className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-8">
           {!view.meta?.cached && view.steps.size > 0 && (
-            <ol className="grid gap-1.5 rounded-xl border border-line bg-panel p-4 text-sm">
+            <ol className="grid gap-2.5 rounded-2xl border border-line bg-panel p-6 text-base">
               {STEP_ORDER.map((id) => {
                 const s = view.steps.get(id);
                 const icon = !s ? "○" : s.status === "done" ? "●" : s.status === "error" ? "✕" : "◐";
                 return (
-                  <li key={id} className={`flex gap-2 ${s ? "" : "text-muted/60"}`}>
-                    <span className={`w-4 ${s?.status === "running" ? "animate-pulse text-accent" : s?.status === "done" ? "text-good" : ""}`}>{icon}</span>
+                  <li key={id} className={`flex gap-3 ${s ? "" : "text-muted/60"}`}>
+                    <span className={`w-5 ${s?.status === "running" ? "animate-pulse text-accent" : s?.status === "done" ? "text-good" : ""}`}>{icon}</span>
                     <span>{t.steps[id]}</span>
                     {s?.detail && <span className="truncate text-muted">· {s.detail}</span>}
                   </li>
@@ -226,21 +226,21 @@ export default function Compass() {
           {view.original && <OriginalCard h={view.original} lang={lang} />}
 
           {view.overview && (
-            <div className="rounded-xl border border-line bg-panel p-5">
-              <p className="text-sm leading-6">{view.overview.summary}</p>
+            <div className="rounded-2xl border border-line bg-panel p-6 sm:p-8">
+              <p className="text-lg leading-8">{view.overview.summary}</p>
               {view.overview.upstream.length > 0 && (
-                <p className="mt-3 text-xs text-muted">
+                <p className="mt-4 text-base text-muted">
                   {t.upstream}: <span className="font-mono text-ink">{view.overview.upstream.join(" · ")}</span>
                 </p>
               )}
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {view.overview.facets.map((f) => (
-                  <div key={f.label} className="rounded-lg border border-line px-3 py-2">
+                  <div key={f.label} className="rounded-xl border border-line px-4 py-3.5">
                     <div className="flex items-baseline gap-2">
-                      <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-[10px] uppercase text-accent">{f.type}</span>
-                      <span className="text-sm font-medium">{f.label}</span>
+                      <span className="rounded bg-accent-soft px-1.5 py-0.5 font-mono text-xs uppercase text-accent">{f.type}</span>
+                      <span className="text-base font-medium">{f.label}</span>
                     </div>
-                    <p className="mt-1 text-xs leading-5 text-muted">{f.description}</p>
+                    <p className="mt-1.5 text-[15px] leading-7 text-muted">{f.description}</p>
                   </div>
                 ))}
               </div>
@@ -252,9 +252,9 @@ export default function Compass() {
           )}
 
           {view.report && (
-            <article className="rounded-xl border border-line bg-panel p-5 sm:p-6">
-              <h2 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted">{t.report}</h2>
-              <div className="report text-[15px] break-words">
+            <article className="rounded-2xl border border-line bg-panel p-6 sm:p-10">
+              <h2 className="mb-3 text-sm font-medium uppercase tracking-wider text-muted">{t.report}</h2>
+              <div className="report break-words">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{view.report}</ReactMarkdown>
               </div>
             </article>
@@ -263,14 +263,14 @@ export default function Compass() {
           {view.candidates && view.candidates.length > 0 && <CandidateTable rows={view.candidates} lang={lang} />}
 
           {view.meta && (view.meta.cached || view.meta.elapsedMs) && (
-            <p className="text-xs text-muted">
+            <p className="text-sm text-muted">
               {view.meta.cached ? t.cached : `${t.took} ${Math.round((view.meta.elapsedMs ?? 0) / 1000)}s`} · {view.meta.model} · {view.meta.tierModel}
             </p>
           )}
         </section>
       )}
 
-      <footer className="mt-16 border-t border-line pt-4 text-xs text-muted">
+      <footer className="mt-20 border-t border-line pt-6 text-sm text-muted">
         <a className="hover:text-ink" href="https://github.com/exordor/repo-compass">
           github.com/exordor/repo-compass
         </a>{" "}
@@ -291,15 +291,15 @@ function OriginalCard({ h, lang }: { h: Health; lang: Lang }) {
     ["PR merge", h.pr_merge_rate === null ? "—" : `${Math.round(h.pr_merge_rate * 100)}%`],
   ];
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-line bg-panel p-5 sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-6 rounded-2xl border border-line bg-panel p-6 sm:p-8 sm:flex-row sm:items-center">
       <div className="min-w-0 flex-1">
-        <a href={h.url} className="font-mono text-lg font-semibold hover:text-accent" target="_blank" rel="noreferrer">
+        <a href={h.url} className="font-mono text-2xl font-semibold hover:text-accent" target="_blank" rel="noreferrer">
           {h.repo}
         </a>
-        {h.moved_from && <span className="ml-2 text-xs text-warn">← {h.moved_from}</span>}
-        {h.archived && <span className="ml-2 text-xs text-bad">ARCHIVED</span>}
-        <p className="mt-1 text-sm text-muted">{h.description}</p>
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+        {h.moved_from && <span className="ml-2 text-sm text-warn">← {h.moved_from}</span>}
+        {h.archived && <span className="ml-2 text-sm text-bad">ARCHIVED</span>}
+        <p className="mt-2 text-base leading-7 text-muted">{h.description}</p>
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 text-[15px]">
           {stats.map(([k, v]) => (
             <span key={k}>
               <span className="text-muted">{k}</span> <span className="font-mono">{v}</span>
@@ -308,8 +308,8 @@ function OriginalCard({ h, lang }: { h: Health; lang: Lang }) {
         </div>
       </div>
       <div className="text-center">
-        <div className={`font-mono text-4xl font-semibold ${scoreColor(h.score)}`}>{h.score}</div>
-        <div className="text-[10px] uppercase tracking-wider text-muted">{t.score}</div>
+        <div className={`font-mono text-5xl font-semibold ${scoreColor(h.score)}`}>{h.score}</div>
+        <div className="mt-1 text-xs uppercase tracking-wider text-muted">{t.score}</div>
       </div>
     </div>
   );
@@ -318,38 +318,38 @@ function OriginalCard({ h, lang }: { h: Health; lang: Lang }) {
 function CandidateTable({ rows, lang }: { rows: Candidate[]; lang: Lang }) {
   const t = T[lang];
   return (
-    <div className="rounded-xl border border-line bg-panel">
-      <h2 className="px-5 pt-4 text-xs font-medium uppercase tracking-wider text-muted">{t.candidates}</h2>
+    <div className="rounded-2xl border border-line bg-panel">
+      <h2 className="px-6 pt-5 text-sm font-medium uppercase tracking-wider text-muted">{t.candidates}</h2>
       <div className="overflow-x-auto">
-        <table className="mt-2 w-full min-w-[640px] text-left text-xs">
+        <table className="mt-3 w-full min-w-[720px] text-left text-[15px]">
           <thead className="text-muted">
             <tr className="border-b border-line">
-              <th className="px-5 py-2 font-normal">{t.tier}</th>
-              <th className="py-2 font-normal">repo</th>
-              <th className="py-2 text-right font-normal">★</th>
-              <th className="py-2 text-right font-normal">{t.perDay}</th>
-              <th className="py-2 text-right font-normal">{t.push}</th>
-              <th className="py-2 text-right font-normal">{t.score}</th>
-              <th className="px-5 py-2 font-normal">{t.shared}</th>
+              <th className="px-6 py-3 font-normal">{t.tier}</th>
+              <th className="py-3 font-normal">repo</th>
+              <th className="py-3 text-right font-normal">★</th>
+              <th className="py-3 text-right font-normal">{t.perDay}</th>
+              <th className="py-3 text-right font-normal">{t.push}</th>
+              <th className="py-3 text-right font-normal">{t.score}</th>
+              <th className="px-6 py-3 font-normal">{t.shared}</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((c) => (
               <tr key={c.repo} className="border-b border-line/60 align-top last:border-0">
-                <td className="px-5 py-2.5 font-mono">{"◆".repeat(c.tier)}</td>
-                <td className="py-2.5 pr-3">
+                <td className="px-6 py-3.5 font-mono">{"◆".repeat(c.tier)}</td>
+                <td className="py-3.5 pr-4">
                   <a href={c.url} target="_blank" rel="noreferrer" className="font-mono font-medium hover:text-accent">
                     {c.repo}
                   </a>
-                  <span className="ml-1.5 rounded bg-accent-soft px-1 text-[10px] text-accent">{c.relation}</span>
-                  {c.archived && <span className="ml-1 text-[10px] text-bad">ARCHIVED</span>}
-                  <div className="mt-0.5 max-w-xs truncate text-muted">{c.description}</div>
+                  <span className="ml-1.5 rounded bg-accent-soft px-1.5 text-xs text-accent">{c.relation}</span>
+                  {c.archived && <span className="ml-1 text-xs text-bad">ARCHIVED</span>}
+                  <div className="mt-1 max-w-sm truncate text-sm text-muted">{c.description}</div>
                 </td>
-                <td className="py-2.5 text-right font-mono">{fmtStars(c.stars)}</td>
-                <td className="py-2.5 text-right font-mono">{c.stars_per_day}</td>
-                <td className="py-2.5 text-right font-mono">{t.days(c.pushed_days_ago)}</td>
-                <td className={`py-2.5 text-right font-mono ${scoreColor(c.score)}`}>{c.score}</td>
-                <td className="px-5 py-2.5 text-muted">{c.shared.join(" · ") || "—"}</td>
+                <td className="py-3.5 text-right font-mono">{fmtStars(c.stars)}</td>
+                <td className="py-3.5 text-right font-mono">{c.stars_per_day}</td>
+                <td className="py-3.5 text-right font-mono">{t.days(c.pushed_days_ago)}</td>
+                <td className={`py-3.5 text-right font-mono ${scoreColor(c.score)}`}>{c.score}</td>
+                <td className="px-6 py-3.5 text-muted">{c.shared.join(" · ") || "—"}</td>
               </tr>
             ))}
           </tbody>

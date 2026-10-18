@@ -62,10 +62,10 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
   const active = hover ? rows.find((r) => r.repo === hover) : undefined;
 
   return (
-    <div className="rounded-xl border border-line bg-panel">
-      <div className="flex flex-wrap items-center justify-between gap-2 px-5 pt-4">
-        <h2 className="text-xs font-medium uppercase tracking-wider text-muted">{lang === "zh" ? "关系图" : "Relationship map"}</h2>
-        <div className="flex flex-wrap gap-3 text-[11px] text-muted">
+    <div className="rounded-2xl border border-line bg-panel">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-6 pt-5">
+        <h2 className="text-sm font-medium uppercase tracking-wider text-muted">{lang === "zh" ? "关系图" : "Relationship map"}</h2>
+        <div className="flex flex-wrap gap-4 text-sm text-muted">
           {present.map((rel) => (
             <span key={rel} className="flex items-center gap-1">
               <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: COLOR[rel] }} />
@@ -103,10 +103,10 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
 
           <g>
             <circle cx={CX} cy={CY} r={nodeR(original.stars) + 8} fill="var(--ink)" />
-            <text x={CX} y={CY + nodeR(original.stars) + 26} textAnchor="middle" fontSize="14" fontWeight="600" fill="var(--ink)" className="font-mono" {...halo}>
+            <text x={CX} y={CY + nodeR(original.stars) + 26} textAnchor="middle" fontSize="16" fontWeight="600" fill="var(--ink)" className="font-mono" {...halo}>
               {original.repo}
             </text>
-            <text x={CX} y={CY + nodeR(original.stars) + 42} textAnchor="middle" fontSize="11" fill="var(--muted)" {...halo}>
+            <text x={CX} y={CY + nodeR(original.stars) + 42} textAnchor="middle" fontSize="12.5" fill="var(--muted)" {...halo}>
               ★{original.stars.toLocaleString()} · {lang === "zh" ? "健康分" : "health"} {original.score}
             </text>
           </g>
@@ -127,7 +127,7 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
                     x={x + (right ? 1 : -1) * (nodeR(r.stars) + 5)}
                     y={y + 4}
                     textAnchor={right ? "start" : "end"}
-                    fontSize="12"
+                    fontSize="13.5"
                     fill="var(--ink)"
                     className="font-mono"
                     {...halo}
@@ -142,7 +142,7 @@ export default function RelationGraph({ original, rows, lang }: { original: Heal
         </svg>
       </div>
 
-      <div className="min-h-10 px-5 pb-4 text-xs text-muted">
+      <div className="min-h-10 px-6 pb-5 text-base text-muted">
         {active ? (
           <span>
             <span className="font-mono text-ink">{active.repo}</span> · ★{active.stars.toLocaleString()} · {LABEL[lang][active.relation]} ·{" "}
